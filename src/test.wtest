@@ -1,0 +1,75 @@
+import casa.*
+
+
+test "se rompe algo de 1000 pesos de la casa, aumentando el monto de reparación" {
+	casaDePepeYJulian.montoReparaciones(1000)
+	assert.that(casaDePepeYJulian.tieneViveresSuficientes())
+	assert.that(casaDePepeYJulian.hayQueHacerReparaciones())
+	assert.notThat(casaDePepeYJulian.casaEnOrden())
+}
+
+test "prueba cuenta con gastos"{
+	cuentaConGastos.costoDeOperacion(20)
+	cuentaConGastos.depositar(1000)
+	assert.equals(980,cuentaConGastos.saldo())
+	
+}
+
+test "prueba cuenta combinada"{
+	cuentaCombinada.cuentaPrimaria(cuentaConGastos)
+	cuentaConGastos.costoDeOperacion(50)
+	cuentaCombinada.cuentaSecundaria(cuentaCorriente)
+	cuentaCorriente.depositar(500)
+	cuentaCombinada.depositar(100)
+	cuentaCombinada.extraer(200)
+	assert.equals(50,cuentaCombinada.saldoCuentaPrimaria())
+	assert.equals(300,cuentaCombinada.saldoCuentaSecundaria())
+	assert.equals(350,cuentaCombinada.saldo())
+	
+}
+
+test "prueba de estrategias de ahorro"{
+	casaDePepeYJulian.viveres(50)
+	casaDePepeYJulian.montoReparaciones(100)
+	casaDePepeYJulian.cuentaBancaria(cuentaCorriente)
+	casaDePepeYJulian.estrategiaAhorro(full)
+	cuentaCorriente.depositar(1000)
+	assert.equals(90,casaDePepeYJulian.cantidadViveres())
+	assert.equals(100,casaDePepeYJulian.montoReparaciones())
+	assert.equals(800,casaDePepeYJulian.saldo())
+}
+
+test "probar extraccion de gastos en cuenta combinada"{
+	casaDePepeYJulian.cuentaBancaria(cuentaCombinada)
+	cuentaCombinada.cuentaPrimaria(cuentaConGastos)
+	cuentaCombinada.cuentaSecundaria(cuentaCorriente)
+	cuentaConGastos.costoDeOperacion(10)
+	cuentaCombinada.depositar(100)
+	cuentaCorriente.depositar(2000)
+	assert.equals(2090,cuentaCombinada.saldo())
+	casaDePepeYJulian.estrategiaAhorro(full)
+	casaDePepeYJulian.montoReparaciones(490)
+	casaDePepeYJulian.viveres(100)
+	assert.equals(1600,casaDePepeYJulian.saldo())
+}
+test "probar cantidad de viveres segun estrategia de ahorro minimo e indispensable"	{
+	
+	casaDePepeYJulian.viveres(70)
+	casaDePepeYJulian.estrategiaAhorro(minimoEIndispensasble)
+	assert.equals(70,casaDePepeYJulian.cantidadViveres())
+}
+
+test "chequeo estrategias de ahorro en casa2"{
+	casa2.montoReparaciones(100)
+	casa2.cuentaBancaria(cuentaCorriente)
+	casa2.estrategiaAhorro(full)
+	cuentaCorriente.depositar(1000)
+	assert.equals(90,casa2.cantidadViveres())
+	assert.equals(100,casa2.montoReparaciones())
+	assert.equals(800,casa2.saldo())
+	
+	
+}
+
+
+
